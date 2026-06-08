@@ -1,0 +1,21 @@
+{
+  "name": "nusphere-backend",
+  "version": "1.0.0",
+  "description": "Backend server for NUSphere",
+  "license": "ISC",
+  "author": "Valentino Nathan",
+  "type": "module",
+  "main": "./src/app.js",
+  "scripts": {
+    "test": "none",
+    "start": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
