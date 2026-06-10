@@ -7,10 +7,10 @@ export function loginInputValidation(req, res, next) {
         const password = body?.password;
 
         if (username == undefined || password == undefined) {
-            return res.status(400).send("Either username or password is missing!");
+            return res.status(400).json({message: "Either username or password is missing!"});
         }
 
-        if (username.length > 30) return res.status(400).send("Username length should not be > 30");
+        if (username.length > 30) return res.status(400).json({message: "Username length should not be > 30"});
 
         next();
     } catch (error) {

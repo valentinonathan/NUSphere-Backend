@@ -12,15 +12,15 @@ export async function loginController(req, res, next) {
         if (isValid) {
             const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD);
             res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10});
-            res.status(200).send("You are authorized");
+            res.status(200).json({message: "You are authorized"});
         }
     } catch (error) {
         if (error.message == "Username not found") {
-            res.status(401).send(error.message);
+            res.status(401).json({message: error.message});
         } else if (error.message == "Password does not match") {
-            res.status(401).send(error.message);
+            res.status(401).json({message: error.message});
         } else {
-            res.status(500).send(error.message);
+            res.status(500).send({message: error.message});
         }
     }
 }
