@@ -29,7 +29,7 @@ app.use(cors({
 
 import { authRouter } from "./routes/auth.route.js";
 app.use("/auth", authRouter);
-
+app.use("/test", authRouter);
 
 app.get("/", async (req, res, next) => {
     try {
