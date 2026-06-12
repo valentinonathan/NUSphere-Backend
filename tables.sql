@@ -1,0 +1,37 @@
+CREATE table users (
+	id BIGSERIAL PRIMARY KEY,
+	username VARCHAR(30) UNIQUE,
+	first_name VARCHAR(30) NOT NULL,
+	last_name VARCHAR(30),
+	password_hash VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE posts (
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	user_id BIGINT REFERENCES users(id) NOT NULL,
+	url TEXT NOT NULL
+);
+
+CREATE TABLE comments (
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	post_id BIGINT REFERENCES posts(id) NOT NULL,
+	user_id BIGINT REFERENCES users(id) NOT NULL,
+	content TEXT
+);
+
+CREATE TABLE likes (
+	PRIMARY KEY(post_id, user_id),
+	user_id BIGINT REFERENCES users(id) NOT NULL,
+	post_id BIGINT REFERENCES posts(id) NOT NULL
+);
+
+CREATE TABLE events (
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	user_id BIGINT REFERENCES users(id) NOT NULL;
+);
+
+CREATE TABLE events_attendance (
+	PRIMARY KEY(event_id, user_id),
+	event_id BIGINT REFERENCES events(id) NOT NULL,
+	user_id BIGINT REFERENCES users(id) NOT NULL
+);
