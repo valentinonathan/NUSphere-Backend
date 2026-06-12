@@ -29,9 +29,9 @@ app.use(cors({
 
 import { authRouter } from "./routes/auth.route.js";
 app.use("/auth", authRouter);
-app.use("/test", authRouter);
 
-app.get("/", async (req, res, next) => {
+import { authenticateRequest } from "./middleware/auth.middleware.js";
+app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
         test = test?.rows;

@@ -1,4 +1,4 @@
-
+import jwt from "jsonwebtoken";
 
 export function loginInputValidation(req, res, next) {
     try {
@@ -15,5 +15,27 @@ export function loginInputValidation(req, res, next) {
         next();
     } catch (error) {
         res.status(500).send(error.message);
+    }
+}
+
+export async function authenticateRequest(req, res, next) {
+    try {
+        const token = req.cookies.token;
+        console.log(token);
+        if (!token) {
+            return res.status(401).json({message: "Not authenticated"});
+        }
+        
+        let payload = null;
+        try {
+            payload = await jwt.verify(token, process.env.JWT_PASSWORD);
+        } catch (error) {
+            return res.status(401).json({message: "Not authenticated"});
+        }
+
+        req.username = payload?.username;
+        next();
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 }

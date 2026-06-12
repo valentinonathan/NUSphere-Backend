@@ -1,14 +1,6 @@
 import db from "../db/index.js";
 import bcrypt from "bcrypt";
-
-// CREATE table users (
-// 	id BIGSERIAL PRIMARY KEY,
-// 	username VARCHAR(30) UNIQUE,
-// 	first_name VARCHAR(30) NOT NULL,
-// 	last_name VARCHAR(30),
-// 	password_hash VARCHAR(255) NOT NULL
-// );
-
+import jwt from "jsonwebtoken";
 
 export async function validateUser(username, password) {
     let userRows = await db.query("SELECT * FROM users WHERE username = $1", [username]);
@@ -23,7 +15,8 @@ export async function validateUser(username, password) {
     const isValid = await bcrypt.compare(password, dbHashedPassword);
     
     if (isValid) {
-        return true;
+        const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD);
+        return token;
     } else {
         throw new Error("Password does not match");
     }

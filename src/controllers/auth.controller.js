@@ -7,13 +7,10 @@ export async function loginController(req, res, next) {
         const username = body.username;
         const password = body.password;
 
-        const isValid = await validateUser(username, password);
+        const token = await validateUser(username, password);
         
-        if (isValid) {
-            const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD);
-            res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10});
-            res.status(200).json({message: "You are authorized"});
-        }
+        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10});
+        res.status(200).json({message: "You are authorized"});
     } catch (error) {
         if (error.message == "Username not found") {
             res.status(401).json({message: error.message});
