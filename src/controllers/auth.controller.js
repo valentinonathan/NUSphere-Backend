@@ -1,4 +1,4 @@
-import { validateUser } from "../services/auth.service.js";
+import { validateUser, createAccount, editAccountDetails } from "../services/auth.service.js";
 import jwt from "jsonwebtoken";
 
 export async function loginController(req, res, next) {
@@ -17,7 +17,40 @@ export async function loginController(req, res, next) {
         } else if (error.message == "Password does not match") {
             res.status(401).json({message: error.message});
         } else {
-            res.status(500).send({message: error.message});
+            res.status(500).json({message: error.message});
         }
+    }
+}
+
+export async function createAccountController(req, res, next) {
+    try {
+        const firstName = req.body.firstName;
+        const lastName = req.body?.lastName;
+        const username = req.body.username;
+        const password = req.body.password;
+        
+        const token = await createAccount(firstName, lastName, username, password);
+
+        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10});
+
+        res.status(200).json({message: "You are authorized"});
+    } catch (error) {
+        if (error.message == "Username has been used") {
+            res.status(400).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
+    }
+}
+
+export async function editAccountDetailsController(req, res, next) {
+    try {
+
+        const username = req.username;
+        await editAccountDetails(req.body, username);
+
+        res.status(200).json({message: "Details saved"})
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 }
