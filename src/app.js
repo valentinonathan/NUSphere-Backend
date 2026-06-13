@@ -11,7 +11,8 @@ app.use(cookieParser());
 
 const allowedOrigins = [
     "http://localhost:3000",
-    "https://nusphere-seven.vercel.app"
+    "https://nusphere-seven.vercel.app",
+    "https://nusphere-valentino-nathan-s-projects.vercel.app"
 ];
 
 app.use(cors({
