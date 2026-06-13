@@ -15,7 +15,7 @@ export async function validateUser(username, password) {
     const isValid = await bcrypt.compare(password, dbHashedPassword);
     
     if (isValid) {
-        const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD);
+        const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD, {sameSite: "none", secure: true});
         return token;
     } else {
         throw new Error("Password does not match");
@@ -41,7 +41,7 @@ export async function createAccount(firstName, lastName, username, password) {
         throw new Error("Update unsuccessful!");
     }
 
-    const token = jwt.sign({username: username}, process.env.JWT_PASSWORD);
+    const token = jwt.sign({username: username}, process.env.JWT_PASSWORD, {sameSite: "none", secure: true});
 
     return token;
 }
