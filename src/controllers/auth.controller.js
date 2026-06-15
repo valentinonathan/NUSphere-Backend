@@ -9,8 +9,8 @@ export async function loginController(req, res, next) {
 
         const token = await validateUser(username, password);
         
-        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
-        res.status(200).json({message: "You are authorized"});
+        // res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
+        res.status(200).json({token});
     } catch (error) {
         if (error.message == "Username not found") {
             res.status(401).json({message: error.message});
@@ -31,9 +31,9 @@ export async function createAccountController(req, res, next) {
         
         const token = await createAccount(firstName, lastName, username, password);
 
-        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
+        // res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
 
-        res.status(200).json({message: "You are authorized"});
+        res.status(200).json({token});
     } catch (error) {
         if (error.message == "Username has been used") {
             res.status(400).json({message: error.message});
