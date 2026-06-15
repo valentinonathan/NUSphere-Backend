@@ -34,7 +34,7 @@ import { authRouter } from "./routes/auth.route.js";
 app.use("/auth", authRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
-app.get("/", async (req, res, next) => {
+app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
         test = test?.rows;
