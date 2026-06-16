@@ -26,15 +26,7 @@ export async function getEvent() {
 
 }
 
-export async function createEvent(username, title, description, location, start_time) {
-    const result = await db.query("SELECT id from users WHERE username = $1", [username]);
-
-    if (result.rowCount === 0) {
-        throw new Error("User not found");
-    }
-
-    const user_id = result.rows[0].id;
-
+export async function createEvent(user_id, title, description, location, start_time) {
     const query = await db.query("INSERT into events(user_id, title, description, location, start_time) VALUES ($1, $2, $3, $4, $5)", [user_id, title, description, location, start_time]);
 
     if (query.rowCount != 1) {

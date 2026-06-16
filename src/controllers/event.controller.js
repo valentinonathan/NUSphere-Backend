@@ -16,10 +16,10 @@ export async function getEventController(req, res, next) {
 export async function createEventController(req, res, next) {
     try {
         const body = req.body;
-        const username = req.username;
+        const user_id = req.userId;
         const {title, description, location, start_time} = body;
 
-        await createEvent(username, title, description, location, start_time);
+        await createEvent(user_id, title, description, location, start_time);
 
         res.status(201).json({message: "Event created"});
 
