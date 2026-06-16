@@ -13,9 +13,11 @@ export async function validateUser(username, password) {
     const dbHashedPassword = userRows?.[0]?.password_hash;
 
     const isValid = await bcrypt.compare(password, dbHashedPassword);
+
+    const userId = userRows[0].id;
     
     if (isValid) {
-        const token = await jwt.sign({username: username}, process.env.JWT_PASSWORD);
+        const token = await jwt.sign({userId: userId}, process.env.JWT_PASSWORD);
         return token;
     } else {
         throw new Error("Password does not match");
@@ -41,12 +43,17 @@ export async function createAccount(firstName, lastName, username, password) {
         throw new Error("Update unsuccessful!");
     }
 
-    const token = jwt.sign({username: username}, process.env.JWT_PASSWORD);
+    userRows = await db.query("SELECT * FROM users WHERE username = $1", [username]);
+    userRows = userRows.rows;
+
+    const userId = userRows[0].id;
+
+    const token = jwt.sign({userId: userId}, process.env.JWT_PASSWORD);
 
     return token;
 }
 
-export async function editAccountDetails(accountForm, username) {
+export async function editAccountDetails(accountForm, userId) {
     const query = await db.query(
         `UPDATE users
         SET nationality = $2,
@@ -54,9 +61,9 @@ export async function editAccountDetails(accountForm, username) {
             faculty = $4,
             major = $5,
             residence = $6
-        WHERE username = $1`,
+        WHERE id = $1`,
         [
-            username,
+            userId,
             accountForm.Nationality,
             accountForm.Year,
             accountForm.Faculty,

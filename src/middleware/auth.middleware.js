@@ -81,7 +81,7 @@ export async function authenticateRequest(req, res, next) {
             return res.status(401).json({message: "Not authenticated"});
         }
 
-        req.username = payload?.username;
+        req.userId = payload?.userId;
         next();
     } catch (error) {
         res.status(500).json({message: error.message});

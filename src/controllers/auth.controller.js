@@ -46,8 +46,8 @@ export async function createAccountController(req, res, next) {
 export async function editAccountDetailsController(req, res, next) {
     try {
 
-        const username = req.username;
-        await editAccountDetails(req.body, username);
+        const userId = req.userId;
+        await editAccountDetails(req.body, userId);
 
         res.status(200).json({message: "Details saved"})
     } catch (error) {
