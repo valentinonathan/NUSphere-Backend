@@ -32,17 +32,26 @@ app.use(cors({
 
 import { authRouter } from "./routes/auth.route.js";
 import { eventRouter } from "./routes/event.route.js";
+import { userRouter } from "./routes/user.route.js";
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
+app.use("/users", userRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
+import { getUserDetailsByUserId } from "./services/user.service.js";
 app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
         test = test?.rows?.[0]?.name;
-        res.status(200).json({message: test + " " + req.userId});
+        let username = await getUserDetailsByUserId(req.userId);
+        username = username.username;
+        res.status(200).json({message: test + " " + req.userId, loggedIn: true, username: username, userId: req.userId});
     } catch (error) {
-        res.status(500).send(error.message);
+        if (error.message == "UserId not found") {
+            res.status(404).json(error.message);
+        } else {
+            res.status(500).send(error.message);
+        }
     }
 });
 

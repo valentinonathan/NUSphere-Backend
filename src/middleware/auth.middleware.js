@@ -90,9 +90,9 @@ export async function authenticateRequest(req, res, next) {
 
 export function editAccountDetailsMiddleware(req, res, next) {
     try {
-        const {Nationality: nationality, Year: year, Faculty: faculty, Major: major, Residence: residence} = req.body;
+        const {Nationality: nationality, Year: year, Faculty: faculty, Major: major, Residence: residence, Bio: bio} = req.body;
 
-        if (nationality == undefined || year == undefined || faculty == undefined || major == undefined || residence == undefined) {
+        if (nationality == undefined || year == undefined || faculty == undefined || major == undefined || residence == undefined || bio == undefined) {
             return res.status(400).json({message: "Bad request format"});
         }
 

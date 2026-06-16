@@ -60,7 +60,8 @@ export async function editAccountDetails(accountForm, userId) {
             year = $3,
             faculty = $4,
             major = $5,
-            residence = $6
+            residence = $6,
+            bio = $7
         WHERE id = $1`,
         [
             userId,
@@ -68,7 +69,8 @@ export async function editAccountDetails(accountForm, userId) {
             accountForm.Year,
             accountForm.Faculty,
             accountForm.Major,
-            accountForm.Residence
+            accountForm.Residence,
+            accountForm.Bio 
         ]
     );
 

@@ -31,7 +31,7 @@ export async function createAccountController(req, res, next) {
         
         const token = await createAccount(firstName, lastName, username, password);
 
-        // res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
+        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
 
         res.status(200).json({token});
     } catch (error) {
