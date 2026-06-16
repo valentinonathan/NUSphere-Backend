@@ -37,8 +37,8 @@ import { authenticateRequest } from "./middleware/auth.middleware.js";
 app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
-        test = test?.rows;
-        res.status(200).json({message: test});
+        test = test?.rows?.[0]?.name;
+        res.status(200).json({message: test + " " + req.username});
     } catch (error) {
         res.status(500).send(error.message);
     }
