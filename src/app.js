@@ -31,7 +31,9 @@ app.use(cors({
 }));
 
 import { authRouter } from "./routes/auth.route.js";
+import { eventRouter } from "./routes/event.route.js";
 app.use("/auth", authRouter);
+app.use("/events", eventRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
 app.get("/", authenticateRequest, async (req, res, next) => {
