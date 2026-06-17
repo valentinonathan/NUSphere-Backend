@@ -14,7 +14,8 @@ const allowedOrigins = [
     "https://nusphere-seven.vercel.app",
     "https://nusphere-valentino-nathan-s-projects.vercel.app",
     "https://nusphere-kur5463in-valentino-nathan-s-projects.vercel.app",
-    "https://nusphere-obl2wj89y-valentino-nathan-s-projects.vercel.app"
+    "https://nusphere-obl2wj89y-valentino-nathan-s-projects.vercel.app",
+    "https://nusphere-git-feature-post-valentino-nathan-s-projects.vercel.app"
 ];
 
 app.use(cors({
