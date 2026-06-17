@@ -32,3 +32,19 @@ export async function getPostsByUsername(username) {
 
     return {posts: query.rows, count: query.rowCount};
 }
+
+export async function getPostById(postId) {
+    const query = await db.query(`
+        SELECT posts.*, users.id, users.username, users.first_name, users.last_name
+        FROM posts
+        JOIN users
+        ON posts.user_id = users.id
+        WHERE posts.id = $1;
+    `, [postId]);
+
+    if (query.rowCount == 0) {
+        throw new Error("Post not found");
+    }
+
+    return query.rows[0];
+}
