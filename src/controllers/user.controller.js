@@ -1,6 +1,6 @@
 import { getUserDetailsByUsername, getUserDetailsByUserId } from "../services/user.service.js";
 
-export async function getUserDetailsByUsernameController(req, res, next) {
+export async function getUserDetailsController(req, res, next) {
     try {
         const username = req.params?.username;
         const userId = req.params?.userId;

@@ -33,9 +33,11 @@ app.use(cors({
 import { authRouter } from "./routes/auth.route.js";
 import { eventRouter } from "./routes/event.route.js";
 import { userRouter } from "./routes/user.route.js";
+import { postRouter } from "./routes/post.route.js";
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
 app.use("/users", userRouter);
+app.use("/posts", postRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
 import { getUserDetailsByUserId } from "./services/user.service.js";
