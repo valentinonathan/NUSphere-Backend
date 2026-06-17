@@ -10,8 +10,8 @@ export async function getEventAttendance(eventId) {
     const query = await db.query(`
         SELECT
             u.id,
-            u.username,
-        FROM event_attendance ea
+            u.username
+        FROM events_attendance ea
         JOIN users u
             ON ea.user_id = u.id
         WHERE ea.event_id = $1;

@@ -10,7 +10,7 @@ export async function getEventAttendanceController(req, res, next) {
 
         const attendance = await getEventAttendance(id);
 
-        res.status(200).json({ data: events });
+        res.status(200).json({ data: attendance });
 
     } catch (error) {
 
