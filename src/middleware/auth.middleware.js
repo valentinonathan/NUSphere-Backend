@@ -78,6 +78,7 @@ export async function authenticateRequest(req, res, next) {
         try {
             payload = await jwt.verify(token, process.env.JWT_PASSWORD);
         } catch (error) {
+            console.error("authenticateRequest: ", error);
             return res.status(401).json({message: "Not authenticated"});
         }
 

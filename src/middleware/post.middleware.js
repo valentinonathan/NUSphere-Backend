@@ -11,6 +11,7 @@ export function likePostValidator(req, res, next) {
 
         next();
     } catch (error) {
+        console.error("likePostValidator: " + error.message, error);
         res.status(500).json({message: error.message});
     }
 }

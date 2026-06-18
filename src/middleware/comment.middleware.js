@@ -12,6 +12,7 @@ export function postCommentValidator(req, res, next) {
 
         next();
     } catch (error) {
+        console.error("postCommentValidator: " + error.message, error);
         res.status(500).json({message: error.message});
     }
 }

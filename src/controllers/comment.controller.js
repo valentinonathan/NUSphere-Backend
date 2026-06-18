@@ -12,6 +12,7 @@ export async function getCommentsByPostIdController(req, res, next) {
         if (error.message == "Post Id does not exist") {
             res.status(404).json({message: error.message});
         } else {
+            console.error("getCommentsByPostIdController: " + error.message, error);
             res.status(500).json({message: error.message});
         }
     }
@@ -30,6 +31,7 @@ export async function postCommentByPostIdController(req, res, next) {
         if (error.message == "Post Id does not exist") {
             return res.status(404).json({message: error.message});
         } else {
+            console.error("postCommentByPostIdController: " + error.message, error);
             return res.status(500).json({message: error.message});
         }
     }

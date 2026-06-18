@@ -17,6 +17,7 @@ export async function getPostsController(req, res, next) {
         if (error.message == "UserId does not exist" || error.message == "Username does not exist") {
             res.status(404).json({message: error.message});
         } else {
+            console.error("getPostsController: " + error.message, error);
             res.status(500).json({message: error.message});
         }
     }
@@ -33,6 +34,7 @@ export async function getPostByIdController(req, res, next) {
         if (error.message == "Post not found") {
             res.status(404).json({message: error.message});
         } else {
+            console.error("getPostByIdController: " + error.message, error);
             res.status(500).json({message: error.message});
         }
     }
@@ -55,6 +57,7 @@ export async function likePostByIdController(req, res, next) {
         if (error.message == "Post Id does not exist") {
             res.status(404).json({message: error.message});
         } else {
+            console.error("likePostByIdController: " + error.message, error);
             res.status(500).json({message: error.message});
         }
     }
@@ -72,6 +75,7 @@ export async function hasLikedController(req, res, next) {
         if (error.message == "Post Id does not exist") {
             res.status(404).json({message: error.message});
         } else {
+            console.error("hasLikedController: " + error.message, error);
             res.status(500).json({message: error.message});
         }
     }
