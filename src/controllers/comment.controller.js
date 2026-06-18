@@ -23,9 +23,9 @@ export async function postCommentByPostIdController(req, res, next) {
         const userId = req.userId;
         const postId = req.params.postId;
 
-        postCommentByPostId(postId, userId, comment);
+        const result = await postCommentByPostId(postId, userId, comment);
 
-        res.status(200).json({message: "Comment successfully posted"});
+        res.status(200).json({message: "Comment successfully posted", comment: result});
     } catch (error) {
         if (error.message == "Post Id does not exist") {
             return res.status(404).json({message: error.message});

@@ -1,4 +1,5 @@
 import db from "../db/index.js"
+import { postIdExists } from "../utils/post.ustils.js";
 import { userIdExists, usernameExists } from "../utils/user.utils.js"
 
 export async function getPostsByUserId(userId) {
@@ -47,4 +48,59 @@ export async function getPostById(postId) {
     }
 
     return query.rows[0];
+}
+
+export async function likePostById(userId, postId) {
+    if (!postIdExists(postId)) {
+        throw new Error("Post Id does not exist");
+    }
+
+    console.log(userId);
+    console.log(postId);
+    const query = await db.query("INSERT INTO likes (user_id, post_id) VALUES ($1, $2)", [userId, postId]);
+
+    if (query?.rowCount === undefined || query.rowCount == 0) {
+        throw new Error("Like post unsuccessful");
+    } 
+
+    let incrementLike = null;
+    try {
+        incrementLike = await db.query("UPDATE posts SET likes = likes + 1 WHERE id = $1", [postId]);
+    } catch (error) {
+        await db.query("DELETE FROM likes WHERE user_id = $1 AND post_id = $2", [userId, postId]);
+        throw new Error("Like post unsuccessful");
+    }
+}
+
+export async function unlikePostById(userId, postId) {
+    if (!postIdExists(postId)) {
+        throw new Error("Post Id does not exist");
+    }
+
+    const query = await db.query("DELETE FROM likes WHERE user_id = $1 AND post_id = $2", [userId, postId]);
+
+    if (query?.rowCount === undefined || query.rowCount == 0) {
+        throw new Error("Unlike post unsuccessful");
+    } 
+
+    let decrementLike = null;
+    try {
+        decrementLike = await db.query("UPDATE posts SET likes = likes - 1 WHERE id = $1", [postId]);
+    } catch (error) {
+        await db.query("INSERT INTO likes (user_id, post_id) VALUES ($1, $2)", [userId, postId]);
+        throw new Error("Unlike post unsuccessful");
+    }
+}
+
+export async function hasLiked(userId, postId) {
+    if (!postIdExists(postId)) {
+        throw new Error("Post Id does not exist");
+    }
+    const query = await db.query("SELECT FROM likes WHERE user_id = $1 AND post_id = $2", [userId, postId]);
+
+    if (query.rowCount == 0) {
+        return false;
+    } else {
+        return true;
+    }
 }

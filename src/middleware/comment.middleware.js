@@ -6,6 +6,10 @@ export function postCommentValidator(req, res, next) {
             return res.status(400).json({message: "Comment field is missing"});
         }
 
+        if (typeof body.comment !== "string") {
+            return res.status(400).json({message: "Comment must be of type string"});
+        }
+
         next();
     } catch (error) {
         res.status(500).json({message: error.message});
