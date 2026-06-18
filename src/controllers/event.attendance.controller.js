@@ -1,14 +1,15 @@
-import { getEventAttendance, createEventAttendance } from "../services/event.attendance.service.js";
+import { getEventAttendance, createEventAttendance, deleteEventAttendance } from "../services/event.attendance.service.js";
 
 export async function getEventAttendanceController(req, res, next) {
     try {
-        const id = req.params?.id;
+        const userId = req.userId;
+        const eventId = req.params?.id;
 
-        if (id == undefined) {
+        if (eventId == undefined) {
             return res.status(400).json({ message: "Event id is required" })
         }
 
-        const attendance = await getEventAttendance(id);
+        const attendance = await getEventAttendance(userId, eventId);
 
         res.status(200).json({ data: attendance });
 
@@ -18,6 +19,8 @@ export async function getEventAttendanceController(req, res, next) {
 
     }
 }
+
+
 
 export async function createEventAttendanceController(req, res, next) {
     try {
@@ -37,3 +40,17 @@ export async function createEventAttendanceController(req, res, next) {
 
     }
 }
+
+export async function deleteEventAttendanceController(req, res, next) {
+    try {
+        const eventId = req.params.id;
+        const userId = req.userId;
+
+        await deleteEventAttendance(userId, eventId);
+
+        res.status(200).json({ message: "Attendance removed" });
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
