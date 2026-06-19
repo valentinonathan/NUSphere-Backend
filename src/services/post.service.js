@@ -3,7 +3,7 @@ import { postIdExists } from "../utils/post.ustils.js";
 import { userIdExists, usernameExists } from "../utils/user.utils.js"
 
 export async function getPostsByUserId(userId) {
-    if (!userIdExists(userId)) {
+    if (!(await userIdExists(userId))) {
         throw new Error("UserId does not exist")
     }
 
@@ -19,7 +19,7 @@ export async function getPostsByUserId(userId) {
 }
 
 export async function getPostsByUsername(username) {
-    if (!usernameExists(username)) {
+    if (!(await usernameExists(username))) {
         throw new Error("Username does not exist")
     }
 
@@ -51,7 +51,7 @@ export async function getPostById(postId) {
 }
 
 export async function likePostById(userId, postId) {
-    if (!postIdExists(postId)) {
+    if (!(await postIdExists(postId))) {
         throw new Error("Post Id does not exist");
     }
 
@@ -73,7 +73,7 @@ export async function likePostById(userId, postId) {
 }
 
 export async function unlikePostById(userId, postId) {
-    if (!postIdExists(postId)) {
+    if (!(await postIdExists(postId))) {
         throw new Error("Post Id does not exist");
     }
 
@@ -93,7 +93,7 @@ export async function unlikePostById(userId, postId) {
 }
 
 export async function hasLiked(userId, postId) {
-    if (!postIdExists(postId)) {
+    if (!(await postIdExists(postId))) {
         throw new Error("Post Id does not exist");
     }
     const query = await db.query("SELECT FROM likes WHERE user_id = $1 AND post_id = $2", [userId, postId]);

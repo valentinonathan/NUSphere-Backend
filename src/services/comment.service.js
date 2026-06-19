@@ -2,7 +2,7 @@ import db from "../db/index.js"
 import { postIdExists } from "../utils/post.ustils.js"
 
 export async function getCommentByPostId(postId) {
-    if (!postIdExists(postId)) {
+    if (!(await postIdExists(postId))) {
         throw new Error("Post Id does not exist");
     }
 
@@ -20,7 +20,7 @@ export async function getCommentByPostId(postId) {
 }
 
 export async function postCommentByPostId(postId, userId, comment) {
-    if (!postIdExists(postId)) {
+    if (!(await postIdExists(postId))) {
         throw new Error("Post Id does not exist")
     }
 

@@ -35,3 +35,25 @@ CREATE TABLE events_attendance (
 	event_id BIGINT REFERENCES events(id) NOT NULL,
 	user_id BIGINT REFERENCES users(id) NOT NULL
 );
+
+CREATE TABLE friends (
+	user1_id BIGINT NOT NULL,
+	user2_id BIGINT NOT NULL,
+
+	PRIMARY KEY (user1_id, user2_id),
+
+	FOREIGN KEY (user1_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (user2_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+
+	CHECK (user1_id < user2_id)
+);
+
+CREATE TABLE friend_requests (
+	sender_id BIGINT NOT NULL,
+	receiver_id BIGINT NOT NULL,
+
+	PRIMARY KEY (sender_id, receiver_id),
+
+	FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+)
