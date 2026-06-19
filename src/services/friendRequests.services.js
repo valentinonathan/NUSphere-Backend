@@ -168,6 +168,27 @@ export async function unsendFriendRequest(senderId, receiverId) {
     }
 }
 
+export async function rejectFriendRequest(receiverId, senderId) {
+    if (!(await userIdExists(senderId))) {
+        throw new Error("senderId does not exist");
+    }
+
+    if (senderId == receiverId) {
+        throw new Error("Cannot reject your own request");
+    }
+
+    const query = await db.query(
+        "DELETE FROM friend_requests WHERE sender_id = $1 AND receiver_id = $2",
+        [senderId, receiverId]
+    );
+
+    if (query.rowCount > 0) {
+        return {message: "Rejected"};
+    } else {
+        throw new Error("Friend request not found");
+    }
+}
+
 export async function friendRequestStatus(senderId, receiverId) {
     if (!(await userIdExists(receiverId))) {
         throw new Error("receiverId does not exist");
@@ -198,4 +219,17 @@ export async function friendRequestStatus(senderId, receiverId) {
             return {status: "hasNotBeenRequested"};
         }
     }
+}
+
+export async function getAllIncomingFriendRequests(userId) {
+    const result = await db.query(
+        `SELECT fr.sender_id, fr.created_at, u.username, u.first_name, u.last_name 
+         FROM friend_requests fr 
+         JOIN users u ON fr.sender_id = u.id 
+         WHERE fr.receiver_id = $1 
+         ORDER BY fr.created_at DESC`,
+        [userId]
+    );
+
+    return result.rows;
 }

@@ -1,4 +1,4 @@
-import { friendRequest, friendRequestStatus, unfriendRequest, unsendFriendRequest } from "../services/friendRequests.services.js";
+import { friendRequest, friendRequestStatus, unfriendRequest, unsendFriendRequest, getAllIncomingFriendRequests, rejectFriendRequest } from "../services/friendRequests.services.js";
 
 
 export async function friendRequestController(req, res, next) {
@@ -42,6 +42,37 @@ export async function friendRequestStatusController(req, res, next) {
             res.status(400).json({message: error.message});
         } else {
             console.error("friendRequestStatusController: ", error);
+            res.status(500).json({message: error.message});
+        }
+    }
+}
+
+export async function getAllIncomingFriendRequestsController(req, res, next) {
+    try {
+        const userId = req.userId;
+
+        const result = await getAllIncomingFriendRequests(userId);
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("getAllIncomingFriendRequestsController: ", error);
+        res.status(500).json({message: error.message});
+    }
+}
+
+export async function rejectFriendRequestController(req, res, next) {
+    try {
+        const receiverId = req.userId;
+        const senderId = req.params.senderId;
+
+        const result = await rejectFriendRequest(receiverId, senderId);
+
+        res.status(200).json(result);
+    } catch (error) {
+        if (error.message == "senderId does not exist" || error.message == "Cannot reject your own request" || error.message == "Friend request not found") {
+            res.status(400).json({message: error.message});
+        } else {
+            console.error("rejectFriendRequestController: ", error);
             res.status(500).json({message: error.message});
         }
     }
