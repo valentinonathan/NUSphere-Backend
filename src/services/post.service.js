@@ -104,3 +104,20 @@ export async function hasLiked(userId, postId) {
         return true;
     }
 }
+
+export async function createPost(userId, url, caption = null) {
+    const query = await db.query(
+        "INSERT INTO posts (user_id, url, caption) VALUES ($1, $2, $3) RETURNING id, user_id, url, caption, created_at",
+        [userId, url, caption]
+    );
+
+    if (query?.rowCount === undefined || query.rowCount === 0) {
+        throw new Error("Failed to create post");
+    }
+
+    const post = query.rows[0];
+    return {
+        postId: post.id,
+        post: post
+    };
+}

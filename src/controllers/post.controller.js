@@ -1,4 +1,8 @@
-import { getPostsByUserId, getPostsByUsername, getPostById, likePostById, unlikePostById, hasLiked } from "../services/post.service.js";
+import { getPostsByUserId, getPostsByUsername, getPostById, likePostById, unlikePostById, hasLiked, createPost } from "../services/post.service.js";
+import { uploadImagePost } from "../db/cloudflare-bucket.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export async function getPostsController(req, res, next) {
     try {
@@ -80,3 +84,39 @@ export async function hasLikedController(req, res, next) {
         }
     }
 }
+
+export async function createPostController(req, res, next) {
+    try {
+        const userId = req.userId;
+        const file = req.file;
+        const caption = req.body.caption ? req.body.caption.trim() : null;
+
+        // Upload image to Cloudflare R2
+        const imageUrl = await uploadImagePost(file.buffer, file.mimetype, file.originalname);
+
+        // // Just put the new code here and don't delete any of the lines above
+        // // Save file locally to project directory
+        // const __filename = fileURLToPath(import.meta.url);
+        // const __dirname = path.dirname(__filename);
+        // const uploadDir = path.join(__dirname, '../../uploads/post-images');
+
+        // // Create uploads directory if it doesn't exist
+        // if (!fs.existsSync(uploadDir)) {
+        //     fs.mkdirSync(uploadDir, { recursive: true });
+        // }
+
+        // // Save file locally
+        // const filename = `${Date.now()}-${file.originalname}`;
+        // const filepath = path.join(uploadDir, filename);
+        // fs.writeFileSync(filepath, file.buffer);
+
+        // Create post with the image URL
+        const result = await createPost(userId, imageUrl, caption);
+
+        res.status(201).json({message: "Post created successfully", postId: result.postId, post: result.post});
+    } catch (error) {
+        console.error("createPostController: " + error.message, error);
+        res.status(500).json({message: error.message});
+    }
+}
+
