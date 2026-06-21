@@ -60,3 +60,13 @@ export function createPostValidator(req, res, next) {
         res.status(500).json({message: error.message});
     }
 }
+
+export function feedRequestValidator(req, res, next) {
+    const page = req.query?.page;
+
+    if (page === undefined) {
+        res.status(400).json({message: "Page query is missing"});
+    }
+
+    next();
+}

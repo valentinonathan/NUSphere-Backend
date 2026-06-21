@@ -1,4 +1,4 @@
-import { getPostsByUserId, getPostsByUsername, getPostById, likePostById, unlikePostById, hasLiked, createPost } from "../services/post.service.js";
+import { getPostsByUserId, getPostsByUsername, getPostById, likePostById, unlikePostById, hasLiked, createPost, feedRequest, updateNewPostUser } from "../services/post.service.js";
 import { uploadImagePost } from "../db/cloudflare-bucket.js";
 import fs from "fs";
 import path from "path";
@@ -113,9 +113,26 @@ export async function createPostController(req, res, next) {
         // Create post with the image URL
         const result = await createPost(userId, imageUrl, caption);
 
+        // Set hasNewPost field in table users to true
+        await updateNewPostUser(userId, result.postId);
+
         res.status(201).json({message: "Post created successfully", postId: result.postId, post: result.post});
     } catch (error) {
         console.error("createPostController: " + error.message, error);
+        res.status(500).json({message: error.message});
+    }
+}
+
+export async function feedRequestController(req, res, next) {
+    try {
+        const page = req.query.page;
+        const userId = req.userId;
+
+        const result = await feedRequest(userId, page);
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("feedRequestController: ", error);
         res.status(500).json({message: error.message});
     }
 }

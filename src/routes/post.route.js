@@ -2,9 +2,10 @@ import express from "express";
 const postRouter = express();
 
 import { authenticateRequest } from "../middleware/auth.middleware.js";
-import { getPostsController, getPostByIdController, likePostByIdController, hasLikedController, createPostController } from "../controllers/post.controller.js";
-import { likePostValidator, createPostValidator, upload } from "../middleware/post.middleware.js";
+import { getPostsController, getPostByIdController, likePostByIdController, hasLikedController, createPostController, feedRequestController } from "../controllers/post.controller.js";
+import { likePostValidator, createPostValidator, upload, feedRequestValidator } from "../middleware/post.middleware.js";
 postRouter.post("/", authenticateRequest, upload.single("image"), createPostValidator, createPostController);
+postRouter.get("/feed", authenticateRequest, feedRequestValidator, feedRequestController);
 postRouter.get("/username/:username", authenticateRequest, getPostsController);
 postRouter.get("/id/:userId", authenticateRequest, getPostsController);
 postRouter.get("/:postId", authenticateRequest, getPostByIdController);

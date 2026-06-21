@@ -55,8 +55,6 @@ export async function likePostById(userId, postId) {
         throw new Error("Post Id does not exist");
     }
 
-    console.log(userId);
-    console.log(postId);
     const query = await db.query("INSERT INTO likes (user_id, post_id) VALUES ($1, $2)", [userId, postId]);
 
     if (query?.rowCount === undefined || query.rowCount == 0) {
@@ -120,4 +118,84 @@ export async function createPost(userId, url, caption = null) {
         postId: post.id,
         post: post
     };
+}
+
+export async function updateNewPostUser(userId, postId) {
+    if (!(await userIdExists(userId))) {
+        throw new Error("User Id does not exist");
+    }
+
+    const query = await db.query("UPDATE users SET new_post = $1", [postId]);
+}
+
+export async function feedRequest(userId, page) {
+    if (!(await userIdExists(userId))) {
+        throw new Error("User Id does not exist");
+    }
+
+    const limit = 20;
+    const offset = (page - 1) * 20;
+
+    const query = await db.query(`
+        SELECT *
+        FROM (
+            -- FRIEND POSTS (priority 1)
+            SELECT 
+                posts.id,
+                posts.created_at,
+                posts.likes,
+                1 AS priority
+            FROM friends 
+            JOIN posts
+            ON friends.user2_id = posts.user_id
+            WHERE friends.user1_id = $1
+
+            UNION ALL
+
+            SELECT 
+                posts.id,
+                posts.created_at,
+                posts.likes,
+                1 AS priority
+            FROM friends 
+            JOIN posts 
+            ON friends.user1_id = posts.user_id
+            WHERE friends.user2_id = $1
+
+
+            UNION ALL
+
+            -- FALLBACK POSTS (priority 2)
+            SELECT 
+                posts.id,
+                posts.created_at,
+                posts.likes,
+                2 AS priority
+            FROM posts
+            WHERE posts.user_id NOT IN (
+                SELECT user2_id FROM friends WHERE user1_id = 1
+                UNION
+                SELECT user1_id FROM friends WHERE user2_id = 1
+            )
+        ) feed
+
+        ORDER BY 
+            priority ASC,
+            created_at DESC,
+            likes DESC
+
+        LIMIT $2 OFFSET $3;
+    `, [userId, limit, offset]);
+    
+    if (page == 1) {
+        const checkHasNewPost = await db.query("SELECT new_post FROM users WHERE id = $1", [userId]);
+
+        if (checkHasNewPost.rows?.[0]?.new_post != undefined && checkHasNewPost.rows?.[0]?.new_post != -1) {
+            const newPost = await db.query("SELECT id, created_at FROM posts WHERE id = $1", [checkHasNewPost.rows[0].new_post]);
+            await db.query("UPDATE users SET new_post = $1", [-1]);
+            query.rows = [newPost.rows[0], ...query.rows];
+        }
+    }
+
+    return {posts: query.rows, page: Number(page), total: query.rowCount}; 
 }
