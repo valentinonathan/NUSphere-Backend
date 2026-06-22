@@ -15,7 +15,8 @@ const allowedOrigins = [
     "https://nusphere-valentino-nathan-s-projects.vercel.app",
     "https://nusphere-kur5463in-valentino-nathan-s-projects.vercel.app",
     "https://nusphere-obl2wj89y-valentino-nathan-s-projects.vercel.app",
-    "https://nusphere-git-feature-post-valentino-nathan-s-projects.vercel.app"
+    "https://nusphere-git-feature-post-valentino-nathan-s-projects.vercel.app",
+    "https://nusphere-8zy1cgm17-valentino-nathan-s-projects.vercel.app"
 ];
 
 app.use(cors({
@@ -37,8 +38,11 @@ import { userRouter } from "./routes/user.route.js";
 import { postRouter } from "./routes/post.route.js";
 import { commentRouter } from "./routes/comment.route.js";
 import { friendRequestsRouter } from "./routes/friendRequests.route.js";
+import { eventAttendanceRouter } from "./routes/event.attendance.route.js";
+
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
+app.use("/events", eventAttendanceRouter)
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
