@@ -173,9 +173,9 @@ export async function feedRequest(userId, page) {
                 2 AS priority
             FROM posts
             WHERE posts.user_id NOT IN (
-                SELECT user2_id FROM friends WHERE user1_id = 1
+                SELECT user2_id FROM friends WHERE user1_id = $1
                 UNION
-                SELECT user1_id FROM friends WHERE user2_id = 1
+                SELECT user1_id FROM friends WHERE user2_id = $1
             )
         ) feed
 
