@@ -57,3 +57,38 @@ CREATE TABLE friend_requests (
 	FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 )
+
+CREATE TABLE conversations (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    type TEXT NOT NULL CHECK (type IN ('direct', 'group')),
+    name TEXT,
+    created_by BIGINT REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE conversation_members (
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role TEXT NOT NULL DEFAULT 'member'
+        CHECK (role IN ('member', 'admin')),
+    joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    last_read_message_id BIGINT,
+    PRIMARY KEY (conversation_id, user_id)
+);
+
+CREATE TABLE messages (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_messages_conversation_created
+ON messages (conversation_id, created_at DESC);
+
+CREATE INDEX idx_conversation_members_user
+ON conversation_members (user_id);
