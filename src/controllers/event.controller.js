@@ -1,4 +1,5 @@
 import { getEvent, createEvent, getIndividualEvent } from "../services/event.service.js";
+import { uploadImageEvent } from "../db/cloudflare-bucket.js";
 
 export async function getIndividualEventController(req, res, next) {
     try {
@@ -37,8 +38,9 @@ export async function createEventController(req, res, next) {
         const body = req.body;
         const user_id = req.userId;
         const {title, description, location, start_time} = body;
+        const url = await uploadImageEvent(req.file.buffer, req.file.mimetype, req.file.originalname);
 
-        await createEvent(user_id, title, description, location, start_time);
+        await createEvent(user_id, title, description, location, start_time, url);
 
         res.status(201).json({message: "Event created"});
 

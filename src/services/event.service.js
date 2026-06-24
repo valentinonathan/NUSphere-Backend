@@ -15,7 +15,8 @@ export async function getEvent() {
     e.title,
     e.description,
     e.location,
-    e.start_time
+    e.start_time,
+    e.url
     FROM events e
     JOIN users u
         ON e.user_id = u.id
@@ -41,7 +42,8 @@ export async function getIndividualEvent(eventId) {
     e.title,
     e.description,
     e.location,
-    e.start_time
+    e.start_time,
+    e.url
     FROM events e
     JOIN users u
         ON e.user_id = u.id
@@ -53,8 +55,11 @@ export async function getIndividualEvent(eventId) {
 
 }
 
-export async function createEvent(user_id, title, description, location, start_time) {
-    const query = await db.query("INSERT into events(user_id, title, description, location, start_time) VALUES ($1, $2, $3, $4, $5)", [user_id, title, description, location, start_time]);
+export async function createEvent(user_id, title, description, location, start_time, url) {
+    const query = await db.query(
+        "INSERT into events(user_id, title, description, location, start_time, url) VALUES ($1, $2, $3, $4, $5, $6)",
+        [user_id, title, description, location, start_time, url]
+    );
 
     if (query.rowCount != 1) {
         throw new Error("Update unsuccessful!");

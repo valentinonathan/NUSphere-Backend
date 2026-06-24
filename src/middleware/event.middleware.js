@@ -4,14 +4,15 @@ export function createEventInputValidation(req, res, next) {
             title,
             description,
             location,
-            start_time
+            start_time, 
+            url
         } = req.body;
 
         if (
             title === undefined ||
             description === undefined ||
             location === undefined ||
-            start_time === undefined
+            start_time === undefined 
         ) {
             return res.status(400).json({
                 message: "Missing required fields"
@@ -53,6 +54,12 @@ export function createEventInputValidation(req, res, next) {
         if (isNaN(date.getTime())) {
             return res.status(400).json({
                 message: "Invalid start time"
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: "Image file is required"
             });
         }
 
