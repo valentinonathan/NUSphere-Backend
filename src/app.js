@@ -39,6 +39,7 @@ import { postRouter } from "./routes/post.route.js";
 import { commentRouter } from "./routes/comment.route.js";
 import { friendRequestsRouter } from "./routes/friendRequests.route.js";
 import { eventAttendanceRouter } from "./routes/event.attendance.route.js";
+import { conversationRouter } from "./routes/conversation.route.js";
 
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
@@ -47,6 +48,7 @@ app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 app.use("/friend-requests", friendRequestsRouter);
+app.use("/conversations", conversationRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
 import { getUserDetailsByUserId } from "./services/user.service.js";
@@ -66,4 +68,4 @@ app.get("/", authenticateRequest, async (req, res, next) => {
     }
 });
 
-app.listen(developmentPort, () => {console.log(`NUSphere server listening on port ${developmentPort}`)});
+export default app;
