@@ -5,10 +5,11 @@
   "license": "ISC",
   "author": "Valentino Nathan",
   "type": "module",
-  "main": "./src/app.js",
+  "main": "node src/server.js",
   "scripts": {
-    "test": "none",
-    "start": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "none"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
