@@ -42,6 +42,7 @@ io.use((socket, next) => {
     }
 
     const payload = jwt.verify(token, process.env.JWT_PASSWORD);
+    console.log("JWT payload:", payload);
     socket.userId = payload.userId;
 
     next();
