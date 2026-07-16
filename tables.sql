@@ -13,19 +13,20 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE conversations (
-	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	user1_id BIGINT REFERENCES users(id) NOT NULL,
-	user2_id BIGINT REFERENCES users(id) NOT NULL,
-	created_at TIMESTAMP DEFAULT NOW(),
-	UNIQUE (user1_id, user2_id)
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user1_id BIGINT NOT NULL REFERENCES users(id),
+    user2_id BIGINT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user1_id, user2_id),
+    CHECK (user1_id <> user2_id)
 );
 
 CREATE TABLE messages (
-	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	conversation_id BIGINT REFERENCES conversations(id) NOT NULL,
-	sender_id BIGINT REFERENCES users(id) NOT NULL,
-	content TEXT NOT NULL,
-	created_at TIMESTAMP DEFAULT NOW()
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE comments (
@@ -83,28 +84,3 @@ CREATE TABLE conversations (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE conversation_members (
-    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role TEXT NOT NULL DEFAULT 'member'
-        CHECK (role IN ('member', 'admin')),
-    joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    last_read_message_id BIGINT,
-    PRIMARY KEY (conversation_id, user_id)
-);
-
-CREATE TABLE messages (
-    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    sender_id BIGINT NOT NULL REFERENCES users(id),
-    content TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    deleted_at TIMESTAMPTZ
-);
-
-CREATE INDEX idx_messages_conversation_created
-ON messages (conversation_id, created_at DESC);
-
-CREATE INDEX idx_conversation_members_user
-ON conversation_members (user_id);
