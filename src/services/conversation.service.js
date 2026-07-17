@@ -1,9 +1,5 @@
 import db from "../db/index.js";
 
-export async function createMessage() {
-
-}
-
 export async function getOrCreateConversation(userId, otherUserId) {
     const user1Id = Math.min(userId, otherUserId);
     const user2Id = Math.max(userId, otherUserId);
@@ -40,13 +36,19 @@ export async function getOrCreateConversation(userId, otherUserId) {
 }
 
 export async function getMessages(conversationId) {
-    const messages = await db.query("SELECT * FROM messages WHERE conversation_id = $1", [conversationId])
+    const messages = await db.query("SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC", [conversationId])
 
     return {messages : messages.rows};
 }
 
+export async function createMessage(senderId, conversationId, content) {
+    const result = await db.query("INSERT INTO messages (sender_id, conversation_id, content) VALUES($1, $2, $3) RETURNING *", [senderId, conversationId, content])
+
+    return result.rows[0];
+}
+
 export async function isUserInConversation(userId, conversationId) {
-    let allowed = await db.query("SELECT * FROM conversations WHERE id = $2 AND (user1_id = $1 OR user2_id = $1) ORDER_BY created_at DESC", [userId, conversationId])
+    let allowed = await db.query("SELECT * FROM conversations WHERE id = $2 AND (user1_id = $1 OR user2_id = $1)", [userId, conversationId])
 
     return allowed.rowCount > 0
 }
