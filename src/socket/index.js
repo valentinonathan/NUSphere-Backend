@@ -7,7 +7,7 @@ import { registerRoomEvents } from "./room.chat.js";
 export function setupSocket(httpServer) {
   const io = new Server(httpServer, {
     cors: {
-      origin: ["http://localhost:3000", "https://nusphere-seven.vercel.app"],
+      origin: ["http://localhost:3000", "https://nusphere-seven.vercel.app", "https://nusphere-lthmgo484-valentino-nathan-s-projects.vercel.app/"],
       credentials: true,
     },
   });
