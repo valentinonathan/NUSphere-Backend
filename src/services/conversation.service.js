@@ -32,7 +32,7 @@ export async function getOrCreateConversation(userId, otherUserId) {
 
     const messages = await getMessages(conversationId);
 
-    return {conversationId : conversationId, messages : messages.messages};
+    return {myUserId: userId, conversationId : conversationId, messages : messages.messages};
 }
 
 export async function getMessages(conversationId) {
