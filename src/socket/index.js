@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
-import { registerChatEvents } from "./chat.js";
+import { registerChatEvents } from "./message.chat.js";
 import { socketAuth } from "./auth.js";
-import { registerRoomEvents } from "./joinConversation.js";
+import { registerRoomEvents } from "./room.chat.js";
 
 
 export function setupSocket(httpServer) {
