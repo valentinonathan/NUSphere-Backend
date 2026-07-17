@@ -34,6 +34,20 @@ export async function getOrCreateConversation(userId, otherUserId) {
         conversationId = existing.rows[0].id
     }
 
-    return {conversationId : conversationId};
+    const messages = getMessages(conversationId);
+
+    return {conversationId : conversationId, messages : messages.messages};
+}
+
+export async function getMessages(conversationId) {
+    const messages = db.query("SELECT * FROM messages WHERE id = $1", [conversationId])
+
+    return {messages : messages.rows};
+}
+
+export async function isUserInConversation(userId, conversationId) {
+    let allowed = db.query("SELECT * FROM conversations WHERE id = $2 AND (user1_id = $1 OR user2_id = $1) ", [userId, conversationId])
+
+    return allowed.rowCount > 0
 }
 

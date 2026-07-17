@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export function socketAuth(socket, next) {
     try {
-        const cookieHeader = ServiceWorkerContainer.handshake.headers.cookie || "";
+        const cookieHeader = socket.handshake.headers.cookie || "";
         const cookies = Object.fromEntries(
             cookieHeader.split("; ").map((pair) => {
                 const [key, ...rest] = pair.split("=");
@@ -12,6 +12,9 @@ export function socketAuth(socket, next) {
 
         const token = cookies.token;
 
+        console.log("cookieHeader:", socket.handshake.headers.cookie);
+        console.log("token:", token);
+
         if (!token) {
             return next(new Error("Unauthorized"));
         }
@@ -19,9 +22,9 @@ export function socketAuth(socket, next) {
         const payload = jwt.verify(token, process.env.JWT_PASSWORD);
 
         socket.userId = payload.userId;
-        
+
         next();
     } catch (err) {
-        next(new Error("Unathorized"))
+        next(new Error("Unauthorized"))
     }
 }
