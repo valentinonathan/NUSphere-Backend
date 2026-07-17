@@ -5,6 +5,8 @@ import http from "http"
 const httpServer = http.createServer(app);
 setupSocket(httpServer);
 
-httpServer.listen(4000, () => {
+const PORT = process.env.PORT || 4000;
+
+httpServer.listen(PORT, () => {
   console.log("listening on *:4000");
 });
