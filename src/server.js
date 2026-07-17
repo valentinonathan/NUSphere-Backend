@@ -1,5 +1,5 @@
 import app from "./app.js";
-import { setupSocket } from "./socket/socket.js";
+import { setupSocket } from "./socket/index.js";
 import http from "http"
 
 const httpServer = http.createServer(app);

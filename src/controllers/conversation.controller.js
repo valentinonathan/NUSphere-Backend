@@ -1,9 +1,4 @@
-import {
-  createConversationAndMessage,
-  getConversationsByUserId,
-  getMessagesByConversation,
-  getOrCreateConversation,
-} from "../services/conversation.service.js";
+import { getOrCreateConversation } from "../services/conversation.service.js";
 import { getUserIdByUsername } from "../utils/user.utils.js";
 
 
@@ -26,17 +21,13 @@ export async function getOrCreateConversationController(req, res) {
       });
     }
 
-    if (String(receiver.id) === String(senderId)) {
+    if (String(receiver) === String(senderId)) {
       return res.status(400).json({
         message: "You cannot start a conversation with yourself",
       });
     }
 
-    const result = await createConversationAndMessage(
-      senderId,
-      receiver,
-      initialMessage
-    );
+    const result = await getOrCreateConversation(senderId, receiver);
 
     return res.status(200).json(result);
   } catch (error) {
@@ -44,26 +35,26 @@ export async function getOrCreateConversationController(req, res) {
   }
 }
 
-export async function getConversationsController(req, res) {
-  try {
-    const conversations = await getConversationsByUserId(req.userId);
-    return res.status(200).json({ conversations });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
+// export async function getConversationsController(req, res) {
+//   try {
+//     const conversations = await getConversationsByUserId(req.userId);
+//     return res.status(200).json({ conversations });
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// }
 
-export async function getConversationMessagesController(req, res) {
-  try {
-    const conversationId = Number(req.params.conversationId);
+// export async function getConversationMessagesController(req, res) {
+//   try {
+//     const conversationId = Number(req.params.conversationId);
 
-    if (Number.isNaN(conversationId)) {
-      return res.status(400).json({ message: "Invalid conversationId" });
-    }
+//     if (Number.isNaN(conversationId)) {
+//       return res.status(400).json({ message: "Invalid conversationId" });
+//     }
 
-    const messages = await getMessagesByConversation(req.userId, conversationId);
-    return res.status(200).json({ messages });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-}
+//     const messages = await getMessagesByConversation(req.userId, conversationId);
+//     return res.status(200).json({ messages });
+//   } catch (error) {
+//     return res.status(500).json({ message: error.message });
+//   }
+// }
