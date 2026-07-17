@@ -2,15 +2,15 @@ import jwt from "jsonwebtoken";
 
 export function socketAuth(socket, next) {
     try {
-        const cookieHeader = socket.handshake.headers.cookie || "";
-        const cookies = Object.fromEntries(
-            cookieHeader.split("; ").map((pair) => {
-                const [key, ...rest] = pair.split("=");
-                return [key, decodeURIComponent(rest.join("="))];
-            })
-        );
+        const token = socket.handshake.auth?.token || "";
+        // const cookies = Object.fromEntries(
+        //     cookieHeader.split("; ").map((pair) => {
+        //         const [key, ...rest] = pair.split("=");
+        //         return [key, decodeURIComponent(rest.join("="))];
+        //     })
+        // );
 
-        const token = cookies.token;
+        // const token = cookies.token;
 
         console.log("cookieHeader:", socket.handshake.headers.cookie);
         console.log("token:", token);
