@@ -10,6 +10,16 @@ export async function getUsernameByUserId(userId) {
     return query.rows[0].username;
 }
 
+export async function getUserDetailsByUserId(userId) {
+    const query = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+
+    if (query.rowCount == 0) {
+        return "";
+    } 
+
+    return query.rows[0];
+}
+
 export async function getUserIdByUsername(username) {
     const query = await db.query("SELECT id FROM users WHERE username = $1", [username]);
 

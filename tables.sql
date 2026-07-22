@@ -108,3 +108,96 @@ ON messages (conversation_id, created_at DESC);
 
 CREATE INDEX idx_conversation_members_user
 ON conversation_members (user_id);
+
+
+CREATE TABLE modules (
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	title VARCHAR(255) NOT NULL UNIQUE,
+	atendees INTEGER DEFAULT 0,
+	banner_url TEXT NOT NULL
+)
+
+CREATE TABLE modules_attendance(
+	user_id BIGINT NOT NULL,
+	module_id BIGINT NOT NULL,
+	PRIMARY KEY (user_id, module_id)
+)
+
+CREATE TABLE threads(
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	user_id BIGINT NOT NULL,
+	module_id BIGINT NOT NULL,
+	title VARCHAR(255) NOT NULL,
+	image_url TEXT,
+	body TEXT,
+	upvote INTEGER DEFAULT 0,
+	downvote INTEGER DEFAULT 0,
+	replies INTEGER DEFAULT 0,
+	category VARCHAR(255) NOT NULL,
+	week INTEGER NOT NULL,
+	created_at TIMESTAMP DEFAULT NOW(),
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_threads_user_id ON threads(user_id);
+CREATE INDEX idx_threads_module_id ON threads(module_id);
+
+CREATE TABLE replies(
+	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	user_id BIGINT NOT NULL,
+	module_id BIGINT NOT NULL,
+	thread_id BIGINT NOT NULL,
+	parent_reply_id BIGINT,
+	body TEXT NOT NULL,
+	upvote INTEGER DEFAULT 0,
+	downvote INTEGER DEFAULT 0,
+	created_at TIMESTAMP DEFAULT NOW(),
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (parent_reply_id) REFERENCES replies(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX idx_replies_user_id ON replies(user_id);
+CREATE INDEX idx_replies_module_id ON replies(module_id);
+CREATE INDEX idx_replies_thread_id ON replies(thread_id);
+CREATE INDEX idx_replies_parent_reply_id ON replies(parent_reply_id);
+
+CREATE TABLE reply_upvote (
+	PRIMARY KEY(reply_id, user_id),
+	user_id BIGINT NOT NULL,
+	reply_id BIGINT NOT NULL,
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (reply_id) REFERENCES replies(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE reply_downvote (
+	PRIMARY KEY(reply_id, user_id),
+	user_id BIGINT NOT NULL,
+	reply_id BIGINT NOT NULL,
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (reply_id) REFERENCES replies(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE thread_upvote (
+	PRIMARY KEY(thread_id, user_id),
+	user_id BIGINT NOT NULL,
+	thread_id BIGINT NOT NULL,
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE thread_downvote (
+	PRIMARY KEY(thread_id, user_id),
+	user_id BIGINT NOT NULL,
+	thread_id BIGINT NOT NULL,
+
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
