@@ -13,7 +13,7 @@ export async function getProductCardController(req, res, next) {
 
 export async function getListingController(req, res, next) {
     try {
-        const result = await getListing(req.params.listingId);
+        const result = await getListing(req.params.id);
 
         res.status(200).json(result)
 
