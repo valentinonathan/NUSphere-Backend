@@ -34,7 +34,7 @@ export async function getModuleThreadsController(req, res, next) {
         let results = {};
 
         if (category === undefined) {
-            results = await getModuleThreadsGeneral(moduleCode);
+            results = await getModuleThreadsGeneral(moduleCode, userId);
         } else {
             results = await getModuleThreadsByCategory(category, moduleCode, userId);
         }
