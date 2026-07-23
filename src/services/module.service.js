@@ -1,6 +1,21 @@
 import db from "../db/index.js"
-import { checkAttendance, hasReplyDownvote, hasReplyUpvote, hasThreadDownvote, hasThreadUpvote, moduleTitleToId } from "../utils/module.utils.js";
+import { checkAttendance, getThreadById, hasReplyDownvote, hasReplyUpvote, hasThreadDownvote, hasThreadUpvote, moduleTitleToId } from "../utils/module.utils.js";
 import { getUserDetailsByUserId, userIdExists } from "../utils/user.utils.js";
+
+export async function createThreads(title, url, body, category, week, moduleCode, userId) {
+    const moduleId = await moduleTitleToId(moduleCode);
+    const query = await db.query(`
+        INSERT INTO threads(title, user_id, module_id, image_url, body, category, week) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id
+    `, [title, userId, moduleId, url, body, category, Number(week)]);
+
+    if (query?.rowCount === undefined || query.rowCount === 0) {
+        throw new Error("Failed to create post");
+    }
+
+    await db.query("UPDATE users SET new_thread = $1 WHERE id = $2", [query?.rows?.[0]?.id, userId]);
+
+    return {message: "createThreads successful"};
+}
 
 export async function getMyModule(userId) {
     const query = await db.query(`
@@ -76,6 +91,17 @@ export async function getModuleThreadsGeneral(moduleCode, userId) {
     }
 
     let results = groupByWeek(query.rows);
+
+    const userDetails = await getUserDetailsByUserId(userId);
+    
+    if (userDetails?.new_thread != undefined && userDetails?.new_thread != -1) {
+        const newThread = await getThreadById(userDetails.new_thread, userId);
+        if (newThread?.category !== undefined && newThread.category == "General") {
+            results.newThread = newThread;
+            await db.query("UPDATE users SET new_thread = $1 WHERE id = $2", [-1, userId]);
+        }
+    }
+
     results.message = "Request module threads successful";
     return results;
 }
@@ -114,6 +140,17 @@ export async function getModuleThreadsByCategory(category, moduleCode, userId) {
     }
 
     const results = groupByWeek(query.rows);
+
+    const userDetails = await getUserDetailsByUserId(userId);
+
+    if (userDetails?.new_thread != undefined && userDetails?.new_thread != -1) {
+        const newThread = await getThreadById(userDetails.new_thread, userId);
+        if (newThread?.category !== undefined && newThread.category == category) {
+            results.newThread = newThread;
+            await db.query("UPDATE users SET new_thread = $1 WHERE id = $2", [-1, userId]);
+        }
+    }
+
     results.message = "Request module threads successful";
     return results;
 }

@@ -1,4 +1,32 @@
-import { deleteAttendance, deleteReplyDownvote, deleteReplyUpvote, deleteThreadDownvote, deleteThreadUpvote, getAttendance, getFeedModule, getModuleThreadsByCategory, getModuleThreadsGeneral, getMyModule, getThreadReplies, postAttendance, postReplyDownvote, postReplyUpvote, postThreadDownvote, postThreadReplies, postThreadUpvote } from "../services/module.service.js";
+import { createThreads, deleteAttendance, deleteReplyDownvote, deleteReplyUpvote, deleteThreadDownvote, deleteThreadUpvote, getAttendance, getFeedModule, getModuleThreadsByCategory, getModuleThreadsGeneral, getMyModule, getThreadReplies, postAttendance, postReplyDownvote, postReplyUpvote, postThreadDownvote, postThreadReplies, postThreadUpvote } from "../services/module.service.js";
+import { uploadImageModule } from "../db/cloudflare-bucket.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+export async function createThreadsController(req, res, next) {
+    try {
+        const body = req.body?.body;
+        const title = req.body.title;
+        const category = req.body.category;
+        const week = req.body.week;
+        const moduleCode = req.body.moduleCode;
+        const userId = req.userId;
+        const file = req.file;
+
+        const imageUrl = null;
+        if (req.file) {
+            imageUrl = await uploadImageModule(file.buffer, file.mimetype, file.originalname);
+        }
+
+        const result = await createThreads(title, imageUrl, body, category, week, moduleCode, userId);
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("createThreadsController: ", error);
+        res.status(500).json({message: error.message});
+    }
+}
 
 export async function getMyModuleController(req, res, next) {
     try {

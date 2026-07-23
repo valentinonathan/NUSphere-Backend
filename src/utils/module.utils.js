@@ -59,3 +59,33 @@ export async function hasThreadDownvote(threadId, userId) {
     return query.rowCount > 0;
 }
 
+export async function getThreadById(threadId, userId) {
+    const query = await db.query(`
+        SELECT
+            threads.*,
+            modules.title AS module_title,
+            users.first_name,
+            users.last_name,
+            users.username,
+            (tu.user_id IS NOT NULL) AS has_upvoted,
+            (td.user_id IS NOT NULL) AS has_downvoted
+        FROM threads
+        JOIN modules
+            ON threads.module_id = modules.id
+        JOIN users
+            ON threads.user_id = users.id
+        LEFT JOIN thread_upvote tu
+            ON tu.thread_id = threads.id
+            AND tu.user_id = $2
+        LEFT JOIN thread_downvote td
+            ON td.thread_id = threads.id
+            AND td.user_id = $2
+        WHERE threads.id = $1
+    `, [threadId, userId]);
+
+    if (query.rowCount > 0) {
+        return query.rows[0];
+    } else {
+        return null;
+    }
+}

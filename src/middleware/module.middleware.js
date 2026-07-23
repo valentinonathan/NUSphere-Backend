@@ -1,4 +1,66 @@
 import { isExistModule, isExistReply, isExistThread } from "../utils/module.utils.js";
+import multer from "multer";
+
+const storage = multer.memoryStorage();
+
+const fileFilter = (req, file, cb) => {
+    const allowedMimes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (allowedMimes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error("Only image files are allowed (jpeg, png, webp, gif)"));
+    }
+};
+
+export const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+});
+
+export async function createThreadsValidator(req, res, next) {
+    const body = req.body?.body;
+    const title = req.body?.title;
+    const category = req.body?.category;
+    const week = req.body?.week;
+    const moduleCode = req.body?.moduleCode;
+
+    if (title === undefined || category === undefined || week === undefined || moduleCode === undefined || body === undefined) {
+        return res.status(400).json({message: "Title, category, moduleCode, body, and week are required"});
+    }
+
+    if (!(await isExistModule(moduleCode))) {
+        return res.status(400).json({message: "Module does not exist"});
+    }
+
+    if (title.length == 0) {
+        return res.status(400).json({message: "Title is empty"});
+    }
+
+    if (title.length > 300) {
+        return res.status(400).json({message: "Title must not exceed 300 characters"});
+    }
+
+    if (body.length > 40000) {
+        return res.status(400).json({message: "Body must not exceed 40000 characters"});
+    }
+
+    if (week.length == 0 || category.length == 0) {
+        return res.status(400).json({message: "Either week or category is empty"});   
+    }
+
+    if (week != "0" && week != "1" && week != "2" && week != "3" && week != "4" && week != "5" && week != "6" && week != "7" && week != "8" && week != "9" && week != "10" && week != "11" && week != "12" && week != "13") {
+        return res.status(400).json({message: "Week should be between 0 to 13"});
+    }
+
+    if (category != "General" && category != "Lecture" && category != "Tutorial" && category != "Exam") {
+        return res.status(400).json({message: "Category should be either General, Lecture, Tutorail, or Exam"});
+    }
+
+    next();
+}
 
 export function getModuleThreadsValidator(req, res, next) {
     if (req.params?.moduleCode === undefined || !isExistModule(req.params.moduleCode)) {
