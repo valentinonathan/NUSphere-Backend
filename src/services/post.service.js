@@ -36,7 +36,7 @@ export async function getPostsByUsername(username) {
 
 export async function getPostById(postId) {
     const query = await db.query(`
-        SELECT posts.*, users.id, users.username, users.first_name, users.last_name
+        SELECT posts.*, users.id, users.username, users.first_name, users.last_name, users.pfp_url
         FROM posts
         JOIN users
         ON posts.user_id = users.id

@@ -65,6 +65,7 @@ export async function getModuleThreadsGeneral(moduleCode, userId) {
             users.first_name,
             users.last_name,
             users.username,
+            users.pfp_url,
             (tu.user_id IS NOT NULL) AS has_upvoted,
             (td.user_id IS NOT NULL) AS has_downvoted
         FROM threads
@@ -114,6 +115,7 @@ export async function getModuleThreadsByCategory(category, moduleCode, userId) {
             users.first_name,
             users.last_name,
             users.username,
+            users.pfp_url,
             (tu.user_id IS NOT NULL) AS has_upvoted,
             (td.user_id IS NOT NULL) AS has_downvoted
         FROM threads
@@ -181,6 +183,7 @@ export async function getThreadReplies(threadId, userId) {
             users.first_name,
             users.last_name,
             users.username,
+            users.pfp_url, 
             (ru.user_id IS NOT NULL) AS has_upvoted,
             (rd.user_id IS NOT NULL) AS has_downvoted
         FROM replies

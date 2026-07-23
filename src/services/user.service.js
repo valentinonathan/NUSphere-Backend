@@ -7,8 +7,8 @@ export async function getUserDetailsByUsername(username) {
         throw new Error("Username not found");
     }
 
-    const { id, first_name, last_name, nationality, year, faculty, major, residence, bio, friends } = query.rows[0];
-    const userDetails = {id: id, username: username, firstName: first_name, lastName: last_name, nationality: nationality, year: year, faculty: faculty, major: major, residence: residence, bio: bio, friends: friends};
+    const { id, first_name, last_name, nationality, year, faculty, major, residence, bio, friends, pfp_url } = query.rows[0];
+    const userDetails = {id: id, username: username, firstName: first_name, lastName: last_name, nationality: nationality, year: year, faculty: faculty, major: major, residence: residence, bio: bio, friends: friends, pfpUrl: pfp_url};
 
     return userDetails;
 }
@@ -20,8 +20,8 @@ export async function getUserDetailsByUserId(userId) {
         throw new Error("UserId not found");
     }
 
-    const { id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends } = query.rows[0];
-    const userDetails = {id: id, username: username, firstName: first_name, lastName: last_name, nationality: nationality, year: year, faculty: faculty, major: major, residence: residence, bio: bio, friends: friends};
+    const { id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends, pfp_url } = query.rows[0];
+    const userDetails = {id: id, username: username, firstName: first_name, lastName: last_name, nationality: nationality, year: year, faculty: faculty, major: major, residence: residence, bio: bio, friends: friends, pfpUrl: pfp_url};
 
     return userDetails;
 }
@@ -68,10 +68,10 @@ export function processQueryUserToDbQuery(criteriaArray, queryArray, isStrictFil
         }
     }
     if (isStrictFilter) {
-        const query = "SELECT id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends FROM users WHERE " + dbQueryAnd;
+        const query = "SELECT id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends, pfp_url FROM users WHERE " + dbQueryAnd;
         return query;
     } else {
-        const query = "SELECT id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends FROM users WHERE " 
+        const query = "SELECT id, username, first_name, last_name, nationality, year, faculty, major, residence, bio, friends, pfp_url FROM users WHERE " 
             + dbQueryOr + " ORDER BY CASE WHEN " + dbQueryAnd + " THEN 1 WHEN " + dbQueryOr + " THEN 2 ELSE 3 END";
         return query;
     }

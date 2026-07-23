@@ -7,7 +7,7 @@ export async function getCommentByPostId(postId) {
     }
 
     const query = await db.query(`
-        SELECT comments.*, users.first_name, users.last_name
+        SELECT comments.*, users.first_name, users.last_name, users.pfp_url
         FROM comments
         JOIN posts
         ON comments.post_id = posts.id

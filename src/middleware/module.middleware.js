@@ -110,6 +110,10 @@ export async function postThreadRepliesValidator(req, res, next) {
         return res.status(400).json({message: "Reply body must be of type string"});
     }
 
+    if (reply?.length != undefined && reply.length == 0) {
+        return res.status(400).json({message: "Reply body must not be empty"});
+    }
+
     if (typeof parentReplyId != "number") {
         return res.status(400).json({message: "Parent reply Id must be of type integer"});
     }

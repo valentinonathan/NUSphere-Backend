@@ -55,14 +55,15 @@ app.use("/conversations", conversationRouter);
 app.use("/modules", moduleRouter);
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
-import { getUserDetailsByUserId } from "./services/user.service.js";
+import { getUserDetailsByUserId } from "./utils/user.utils.js";
 app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
         test = test?.rows?.[0]?.name;
-        let username = await getUserDetailsByUserId(req.userId);
-        username = username.username;
-        res.status(200).json({message: test + " " + req.userId, loggedIn: true, username: username, userId: req.userId});
+        let result = await getUserDetailsByUserId(req.userId);
+        let username = result.username;
+        let pfpUrl = result.pfp_url;
+        res.status(200).json({message: test + " " + req.userId, loggedIn: true, username: username, pfpUrl: pfpUrl, userId: req.userId});
     } catch (error) {
         if (error.message == "UserId not found") {
             res.status(404).json(error.message);
