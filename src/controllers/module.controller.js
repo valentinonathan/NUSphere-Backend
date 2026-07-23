@@ -14,7 +14,7 @@ export async function createThreadsController(req, res, next) {
         const userId = req.userId;
         const file = req.file;
 
-        const imageUrl = null;
+        let imageUrl = null;
         if (req.file) {
             imageUrl = await uploadImageModule(file.buffer, file.mimetype, file.originalname);
         }
