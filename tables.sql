@@ -91,7 +91,8 @@ CREATE TABLE listings (
     description TEXT,
     price DECIMAL(10,2),
 	image_url TEXT,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+	category_id INTEGER REFERENCES categories(id)
 );
 
 CREATE TABLE categories (
@@ -99,10 +100,5 @@ CREATE TABLE categories (
     name VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE listing_categories (
-    listing_id INTEGER REFERENCES listings(id) ON DELETE CASCADE,
-    category_id INTEGER REFERENCES categories(id) ON DELETE CASCADE,
 
-    PRIMARY KEY (listing_id, category_id)
-);
 
