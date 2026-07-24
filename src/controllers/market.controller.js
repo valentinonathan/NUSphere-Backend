@@ -38,12 +38,13 @@ export async function createListingController(req, res, next) {
         const title = req.body?.title;
         const description = req.body?.description ?? null;
         const price = req.body?.price;
+        const category_id = req.body?.category_id
 
-        if (!seller_id || !title || !description || !price) {
+        if (!seller_id || !title || !description || !price || !category_id) {
             throw new Error("One of listing's parameters is undefined")
         }
 
-        const result = await createListing(seller_id, title, description, price, imageUrl)
+        const result = await createListing(seller_id, title, description, price, imageUrl, category_id)
 
         res.status(200).json(result);
         
