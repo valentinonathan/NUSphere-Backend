@@ -1,4 +1,4 @@
-import { createThreads, deleteAttendance, deleteReplyDownvote, deleteReplyUpvote, deleteThreadDownvote, deleteThreadUpvote, getAttendance, getFeedModule, getModuleThreadsByCategory, getModuleThreadsGeneral, getMyModule, getThreadReplies, postAttendance, postReplyDownvote, postReplyUpvote, postThreadDownvote, postThreadReplies, postThreadUpvote } from "../services/module.service.js";
+import { createThreads, deleteAttendance, deleteReplyDownvote, deleteReplyUpvote, deleteThreadDownvote, deleteThreadUpvote, getAttendance, getFeedModule, getModule, getModuleThreadsByCategory, getModuleThreadsGeneral, getMyModule, getThreadReplies, postAttendance, postReplyDownvote, postReplyUpvote, postThreadDownvote, postThreadReplies, postThreadUpvote } from "../services/module.service.js";
 import { uploadImageModule } from "../db/cloudflare-bucket.js";
 import fs from "fs";
 import path from "path";
@@ -69,7 +69,19 @@ export async function getModuleThreadsController(req, res, next) {
 
         res.status(200).json(results);
     } catch (error) {
-        console.error("getModuleThreadController: ", error);
+        console.error("getModuleThreadsController: ", error);
+        res.status(500).json({message: error.message});
+    }
+}
+
+export async function getModuleController(req, res, next) {
+    try {
+        const moduleCode = req.params.moduleCode;
+        const result = await getModule(moduleCode);
+        
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("getModuleController", error);
         res.status(500).json({message: error.message});
     }
 }

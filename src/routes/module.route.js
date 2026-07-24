@@ -2,11 +2,12 @@ import express from "express"
 const moduleRouter = express();
 
 import { authenticateRequest } from "../middleware/auth.middleware.js"
-import { createThreadsController, deleteAttendanceController, deleteReplyDownvoteController, deleteReplyUpvoteController, deleteThreadDownvoteController, deleteThreadUpvoteController, getAttendanceController, getFeedModuleController, getModuleThreadsController, getMyModuleController, getThreadRepliesController, postAttendanceController, postReplyDownvoteController, postReplyUpvoteController, postThreadDownvoteController, postThreadRepliesController, postThreadUpvoteController } from "../controllers/module.controller.js"
-import { createThreadsValidator, getModuleThreadsValidator, getThreadRepliesValidator, postAttendanceValidator, postReplyUpvoteValidator, postThreadRepliesValidator, threadVoteValidator, upload } from "../middleware/module.middleware.js";
+import { createThreadsController, deleteAttendanceController, deleteReplyDownvoteController, deleteReplyUpvoteController, deleteThreadDownvoteController, deleteThreadUpvoteController, getAttendanceController, getFeedModuleController, getModuleController, getModuleThreadsController, getMyModuleController, getThreadRepliesController, postAttendanceController, postReplyDownvoteController, postReplyUpvoteController, postThreadDownvoteController, postThreadRepliesController, postThreadUpvoteController } from "../controllers/module.controller.js"
+import { createThreadsValidator, getModuleThreadsValidator, getModuleValidator, getThreadRepliesValidator, postAttendanceValidator, postReplyUpvoteValidator, postThreadRepliesValidator, threadVoteValidator, upload } from "../middleware/module.middleware.js";
 
 moduleRouter.get("/my", authenticateRequest, getMyModuleController);
 moduleRouter.get("/feed", authenticateRequest, getFeedModuleController);
+moduleRouter.get("/:moduleCode", authenticateRequest, getModuleValidator, getModuleController);
 
 moduleRouter.get("/:moduleCode/threads", authenticateRequest, getModuleThreadsValidator, getModuleThreadsController);
 moduleRouter.post("/:moduleCode/threads", authenticateRequest, upload.single("image"), createThreadsValidator, createThreadsController);

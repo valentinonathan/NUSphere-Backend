@@ -43,6 +43,16 @@ export async function getFeedModule(userId) {
     return query.rows;
 }
 
+export async function getModule(moduleCode) {
+    const query = await db.query("SELECT * FROM modules WHERE title = $1", [moduleCode]);
+    
+    if (query?.rowCount == 0) {
+        throw new Error("Query to database failed");
+    } 
+
+    return query.rows[0];
+}
+
 function groupByWeek(threads) {
     const results = {};
 

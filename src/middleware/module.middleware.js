@@ -78,6 +78,16 @@ export function getModuleThreadsValidator(req, res, next) {
     }
 }
 
+export function getModuleValidator(req, res, next) {
+    if (req.params?.moduleCode === undefined || !isExistModule(req.params.moduleCode)) {
+        return res.status(404).json({message: "moduleCode does not exist"});
+    }
+
+    if (req.query?.category === undefined) {
+        return next();
+    } 
+}
+
 export async function getThreadRepliesValidator(req, res, next) {
     const moduleCode = req.params?.moduleCode;
     const threadId = req.params?.threadId;
