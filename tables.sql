@@ -13,19 +13,20 @@ CREATE TABLE posts (
 );
 
 CREATE TABLE conversations (
-	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	user1_id BIGINT REFERENCES users(id) NOT NULL,
-	user2_id BIGINT REFERENCES users(id) NOT NULL,
-	created_at TIMESTAMP DEFAULT NOW(),
-	UNIQUE (user1_id, user2_id)
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user1_id BIGINT NOT NULL REFERENCES users(id),
+    user2_id BIGINT NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (user1_id, user2_id),
+    CHECK (user1_id <> user2_id)
 );
 
 CREATE TABLE messages (
-	id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-	conversation_id BIGINT REFERENCES conversations(id) NOT NULL,
-	sender_id BIGINT REFERENCES users(id) NOT NULL,
-	content TEXT NOT NULL,
-	created_at TIMESTAMP DEFAULT NOW()
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    sender_id BIGINT NOT NULL REFERENCES users(id),
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE comments (
@@ -83,6 +84,7 @@ CREATE TABLE conversations (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+<<<<<<< HEAD
 CREATE TABLE conversation_members (
     conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -201,3 +203,5 @@ CREATE TABLE thread_downvote (
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (thread_id) REFERENCES threads(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+=======
+>>>>>>> cee876629ce7590df5367597188bfe40b54f81ca
