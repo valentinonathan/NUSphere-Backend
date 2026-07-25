@@ -3,7 +3,7 @@
 import { createMessage, isUserInConversation } from "../services/conversation.service.js";
 
 export function registerChatEvents(io, socket) {
-    socket.on("chat:message", async ({ conversationId, text }) => {
+    socket.on("chat:message", async ({ conversationId, text, isSystemMessage }) => {
         try {
             // const message = await createMessage({
             //     userId: socket.userId,

@@ -61,3 +61,50 @@ export async function getCategories() {
 
     return { data: result.rows };
 }
+
+export async function getMyListings(sellerId) {
+    const result = await db.query(
+        `
+        SELECT
+            l.*,
+            u.username AS seller_username,
+            c.name AS category_name
+        FROM listings l
+        JOIN users u
+            ON l.seller_id = u.id
+        JOIN categories c
+            ON l.category_id = c.id
+        WHERE l.seller_id = $1
+        `,
+        [sellerId]
+    );
+
+
+    return { data: result.rows };
+}
+
+export async function createMarketConversation(conversation_id, listing_id) {
+    const result = await db.query(
+        `
+        INSERT INTO market_conversations (
+            conversation_id,
+            listing_id
+        )
+        VALUES ($1, $2)
+        ON CONFLICT (conversation_id)
+        DO NOTHING
+        RETURNING *
+        `,
+        [conversation_id, listing_id]
+    );
+
+    if (result.rowCount === 0) {
+        return {
+            message: "Market conversation already exists"
+        };
+    }
+
+    return {
+        data: result.rows[0]
+    };
+}

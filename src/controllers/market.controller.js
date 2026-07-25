@@ -1,4 +1,4 @@
-import { getProductCards, getListing, createListing, getCategories } from "../services/market.service.js";
+import { getProductCards, getListing, createListing, getCategories, getMyListings, createMarketConversation } from "../services/market.service.js";
 import { uploadImagePost } from "../db/cloudflare-bucket.js";
 
 export async function getProductCardController(req, res, next) {
@@ -26,7 +26,7 @@ export async function getListingController(req, res, next) {
 export async function createListingController(req, res, next) {
     try {
         const userId = req.userId;
-        const file = req.file;
+        const conversationId = req.body?.conversationId;
         // const caption = req.body.caption ? req.body.caption.trim() : null;
 
         if (!file) {
@@ -53,9 +53,43 @@ export async function createListingController(req, res, next) {
     }
 }
 
+export async function createMarketConversationController(req, res) {
+    try {
+        const { conversationId, listingId } = req.body;
+
+        if (!conversationId || !listingId) {
+            return res.status(400).json({
+                message: "conversation_id and listing_id are required"
+            });
+        }
+
+        const result = await createMarketConversation(
+            Number(conversationId),
+            Number(listingId)
+        );
+
+        return res.status(201).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
+    }
+}
+
 export async function getCategoriesController(req, res, next) {
     try {
         const result = await getCategories();
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+export async function getMyListingsController(req, res, next) {
+    try {
+        const result = await getMyListings(req.userId);
 
         res.status(200).json(result);
     } catch (error) {
