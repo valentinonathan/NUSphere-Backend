@@ -51,3 +51,13 @@ export async function createListing(seller_id, title, description, price, image_
     );
     return { data: true }
 }
+
+export async function getCategories() {
+    const result = await db.query(`
+        SELECT id, name
+        FROM categories
+        ORDER BY name ASC
+    `);
+
+    return { data: result.rows };
+}

@@ -1,4 +1,4 @@
-import { getProductCards, getListing, createListing } from "../services/market.service.js";
+import { getProductCards, getListing, createListing, getCategories } from "../services/market.service.js";
 import { uploadImagePost } from "../db/cloudflare-bucket.js";
 
 export async function getProductCardController(req, res, next) {
@@ -50,6 +50,16 @@ export async function createListingController(req, res, next) {
         
     } catch (error) {
         res.status(400).json({message: error.message})
+    }
+}
+
+export async function getCategoriesController(req, res, next) {
+    try {
+        const result = await getCategories();
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 }
 
