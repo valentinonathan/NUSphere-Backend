@@ -26,7 +26,8 @@ CREATE TABLE messages (
     conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
     sender_id BIGINT NOT NULL REFERENCES users(id),
     content TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+	is_system_message BOOLEAN NOT NULL DEFAULT FALSE;
 );
 
 CREATE TABLE comments (
@@ -92,7 +93,8 @@ CREATE TABLE listings (
     price DECIMAL(10,2),
 	image_url TEXT,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-	category_id INTEGER REFERENCES categories(id)
+	category_id INTEGER REFERENCES categories(id),
+	status VARCHAR(20) NOT NULL DEFAULT 'Available' CHECK (status IN ('Available', 'Reserved', 'Sold', 'Cancelled'));
 );
 
 CREATE TABLE categories (
@@ -100,5 +102,10 @@ CREATE TABLE categories (
     name VARCHAR(100) UNIQUE NOT NULL
 );
 
+CREATE TABLE market_conversations (
+    conversation_id BIGINT PRIMARY KEY REFERENCES conversations(id) ON DELETE CASCADE,
+    listing_id INTEGER NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 
