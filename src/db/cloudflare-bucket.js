@@ -43,3 +43,19 @@ export async function uploadImageEvent(fileBuffer, contentType, filename) {
     return imageUrl;
 }
 
+export async function uploadImageModule(fileBuffer, contentType, filename) {
+    const key = `modules-images/${Date.now()}-${filename}`;
+    
+    await r2.send(
+        new PutObjectCommand({
+            Bucket: "nusphere-posts",
+            Key: key,
+            Body: fileBuffer,
+            ContentType: contentType
+        })
+    );
+    
+    const imageUrl = `https://pub-328fe6c241af430eac6949cf2766cbe1.r2.dev/${key}`;
+    return imageUrl;
+}
+

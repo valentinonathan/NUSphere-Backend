@@ -19,7 +19,8 @@ const allowedOrigins = [
     "https://nusphere-8zy1cgm17-valentino-nathan-s-projects.vercel.app",
     "https://nusphere-gmwyb8t9h-valentino-nathan-s-projects.vercel.app",
     "https://nusphere-lthmgo484-valentino-nathan-s-projects.vercel.app",
-    "https://nusphere-7vehun698-valentino-nathan-s-projects.vercel.app"
+    "https://nusphere-7vehun698-valentino-nathan-s-projects.vercel.app",
+    "https://nusphere-git-features-modules-valentino-nathan-s-projects.vercel.app"
 ];
 
 app.use(cors({
@@ -43,7 +44,6 @@ import { commentRouter } from "./routes/comment.route.js";
 import { friendRequestsRouter } from "./routes/friendRequests.route.js";
 import { eventAttendanceRouter } from "./routes/event.attendance.route.js";
 import { conversationsRouter } from "./routes/conversation.route.js";
-import { marketRouter } from "./routes/market.route.js";
 
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
@@ -53,17 +53,17 @@ app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 app.use("/friend-requests", friendRequestsRouter);
 app.use("/conversations", conversationsRouter);
-app.use("/market", marketRouter)
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
-import { getUserDetailsByUserId } from "./services/user.service.js";
+import { getUserDetailsByUserId } from "./utils/user.utils.js";
 app.get("/", authenticateRequest, async (req, res, next) => {
     try {
         let test = await db.query("SELECT * FROM test");
         test = test?.rows?.[0]?.name;
-        let username = await getUserDetailsByUserId(req.userId);
-        username = username.username;
-        res.status(200).json({message: test + " " + req.userId, loggedIn: true, username: username, userId: req.userId});
+        let result = await getUserDetailsByUserId(req.userId);
+        let username = result.username;
+        let pfpUrl = result.pfp_url;
+        res.status(200).json({message: test + " " + req.userId, loggedIn: true, username: username, pfpUrl: pfpUrl, userId: req.userId});
     } catch (error) {
         if (error.message == "UserId not found") {
             res.status(404).json(error.message);

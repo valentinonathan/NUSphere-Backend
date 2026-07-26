@@ -7,7 +7,7 @@ export function friendRequestValidator(req, res, next) {
             return res.status(400).json({message: "Missing field action"});
         }
 
-        if (body.action != "Unfriend" && body.action != "Unsend request" && body.action != "Request") {
+        if (body.action != "Unfriend" && body.action != "Unsend Request" && body.action != "Request") {
             return res.status(400).json({message: "Action field should be either Request, Unfriend, or Unsend Request"});
         }
         next();

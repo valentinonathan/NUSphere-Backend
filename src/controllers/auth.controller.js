@@ -8,8 +8,15 @@ export async function loginController(req, res, next) {
         const password = body.password;
 
         const token = await validateUser(username, password);
-        
-        // res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
+
+        const cookieOptions = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+        };
+
+        res.cookie("token", token, cookieOptions);
         res.status(200).json({token});
     } catch (error) {
         if (error.message == "Username not found") {
@@ -31,7 +38,14 @@ export async function createAccountController(req, res, next) {
         
         const token = await createAccount(firstName, lastName, username, password);
 
-        res.cookie("token", token, {httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 365 * 10, secure: true, sameSite: "none"});
+        const cookieOptions = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+        };
+
+        res.cookie("token", token, cookieOptions);
 
         res.status(200).json({token});
     } catch (error) {
