@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "vitest"
+    "test:unit": "vitest",
+    "test:integration": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --config jest.config.cjs --runTestsByPath tests/integration/auth.api.test.js tests/integration/user.api.test.js tests/integration/post.api.test.js tests/integration/comment.api.test.js tests/integration/event.api.test.js tests/integration/friend.api.test.js tests/integration/module.api.test.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
@@ -24,7 +25,12 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^7.2.1",
+    "jest": "^30.4.2",
     "nodemon": "^3.1.14",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.12",
     "vitest": "^4.1.9"
   }
 }
