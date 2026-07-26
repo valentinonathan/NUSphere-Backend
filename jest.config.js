@@ -5,6 +5,6 @@ module.exports = {
   extensionsToTreatAsEsm: ['.js'],
   transform: {},
   moduleFileExtensions: ['js', 'json'],
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  setupFiles: ['<rootDir>/tests/setup.js'],
   testPathIgnorePatterns: ['/node_modules/'],
 };

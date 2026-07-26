@@ -48,7 +48,7 @@ describe('Auth API integration', () => {
     expect(response.status).toBe(200);
     expect(response.body.token).toBeDefined();
 
-    const rows = await import('../../src/db/index.js').then(({ default: db }) => db.query('SELECT username FROM users WHERE username = $1', ['ada_new']));
+    const rows = await import('../../src/db/test.js').then(({ default: db }) => db.query('SELECT username FROM users WHERE username = $1', ['ada_new']));
     expect(rows.rows[0].username).toBe('ada_new');
   });
 });

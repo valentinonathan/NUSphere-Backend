@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../../src/app.js';
 import { resetDatabase, createUser, seedModule } from './helpers/db.js';
-import db from '../../src/db/index.js';
+import db from '../../src/db/test.js';
 
 beforeEach(async () => {
   await resetDatabase();

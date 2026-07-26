@@ -9,8 +9,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test:unit": "vitest",
-    "test:integration": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand --config jest.config.cjs --runTestsByPath tests/integration/auth.api.test.js tests/integration/user.api.test.js tests/integration/post.api.test.js tests/integration/comment.api.test.js tests/integration/event.api.test.js tests/integration/friend.api.test.js tests/integration/module.api.test.js"
+    "test:unit": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",

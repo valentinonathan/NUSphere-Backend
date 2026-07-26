@@ -1,4 +1,4 @@
-import db from '../../../src/db/index.js';
+import db from '../../../src/db/test.js';
 
 export async function resetDatabase() {
   await db.query(`
