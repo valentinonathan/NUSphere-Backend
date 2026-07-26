@@ -103,9 +103,12 @@ CREATE TABLE categories (
 );
 
 CREATE TABLE market_conversations (
-    conversation_id BIGINT PRIMARY KEY REFERENCES conversations(id) ON DELETE CASCADE,
+    conversation_id BIGINT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
     listing_id INTEGER NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+
+    PRIMARY KEY (conversation_id, listing_id)
 );
+CREATE UNIQUE INDEX unique_listing_buyer
+ON market_conversations(listing_id, conversation_id);
 
 
