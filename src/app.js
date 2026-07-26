@@ -44,6 +44,8 @@ import { commentRouter } from "./routes/comment.route.js";
 import { friendRequestsRouter } from "./routes/friendRequests.route.js";
 import { eventAttendanceRouter } from "./routes/event.attendance.route.js";
 import { conversationsRouter } from "./routes/conversation.route.js";
+import { moduleRouter } from "./routes/module.route.js";
+import { marketRouter } from "./routes/market.route.js";
 
 app.use("/auth", authRouter);
 app.use("/events", eventRouter);
@@ -53,6 +55,8 @@ app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 app.use("/friend-requests", friendRequestsRouter);
 app.use("/conversations", conversationsRouter);
+app.use("/market", marketRouter);
+app.use("modules", moduleRouter)
 
 import { authenticateRequest } from "./middleware/auth.middleware.js";
 import { getUserDetailsByUserId } from "./utils/user.utils.js";
