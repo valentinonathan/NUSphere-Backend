@@ -91,7 +91,7 @@ export async function createMarketConversation(conversation_id, listing_id) {
             listing_id
         )
         VALUES ($1, $2)
-        ON CONFLICT (conversation_id)
+        ON CONFLICT (conversation_id, listing_id)
         DO NOTHING
         RETURNING *
         `,
@@ -107,4 +107,31 @@ export async function createMarketConversation(conversation_id, listing_id) {
     return {
         data: result.rows[0]
     };
+}
+
+
+export async function getMarketConversationByListingId(listing_id) {
+    const result = await db.query(
+        `
+        SELECT
+            mc.conversation_id,
+            u.id AS buyer_id,
+            u.username AS buyer_username
+        FROM market_conversations mc
+        JOIN conversations c
+            ON mc.conversation_id = c.id
+        JOIN listings l
+            ON mc.listing_id = l.id
+        JOIN users u
+            ON u.id = CASE
+                WHEN c.user1_id = l.seller_id THEN c.user2_id
+                ELSE c.user1_id
+            END
+        WHERE mc.listing_id = $1
+        ORDER BY mc.created_at DESC
+        `,
+        [listing_id]
+    );
+
+    return { data: result.rows };
 }

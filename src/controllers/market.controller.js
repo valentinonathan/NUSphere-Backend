@@ -1,4 +1,4 @@
-import { getProductCards, getListing, createListing, getCategories, getMyListings, createMarketConversation } from "../services/market.service.js";
+import { getProductCards, getListing, createListing, getCategories, getMyListings, createMarketConversation, getMarketConversationByListingId } from "../services/market.service.js";
 import { uploadImagePost } from "../db/cloudflare-bucket.js";
 
 export async function getProductCardController(req, res, next) {
@@ -94,6 +94,36 @@ export async function getMyListingsController(req, res, next) {
         res.status(200).json(result);
     } catch (error) {
         res.status(400).json({ message: error.message });
+    }
+}
+
+
+export async function getMarketConversationByListingIdController(req, res) {
+    try {
+        const listing_id = Number(req.params.listingId);
+        const seller_id = req.userId;
+
+        if (Number.isNaN(listing_id)) {
+            return res.status(400).json({
+                message: "Invalid listing id"
+            });
+        }
+
+        const result = await getMarketConversationByListingId(
+            listing_id,
+            seller_id
+        );
+
+        if (result.message) {
+            return res.status(404).json(result);
+        }
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            message: error.message
+        });
     }
 }
 
