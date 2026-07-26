@@ -52,6 +52,30 @@ export async function createListing(seller_id, title, description, price, image_
     return { data: true }
 }
 
+export async function deleteListing(listingId, sellerId) {
+    const result = await db.query(
+        `
+        DELETE FROM listings
+        WHERE id = $1
+          AND seller_id = $2
+          AND status IN ('Available', 'Cancelled')
+        RETURNING *
+        `,
+        [listingId, sellerId]
+    );
+
+    if (result.rowCount === 0) {
+        return {
+            message:
+                "Listing does not exist, you are not the owner, or the listing cannot be deleted."
+        };
+    }
+
+    return {
+        data: result.rows[0]
+    };
+}
+
 export async function getCategories() {
     const result = await db.query(`
         SELECT id, name
